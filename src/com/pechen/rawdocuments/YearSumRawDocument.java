@@ -1,4 +1,4 @@
-package com.pechen.raw_documents;
+package com.pechen.rawdocuments;
 
 import java.util.List;
 

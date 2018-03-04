@@ -1,4 +1,4 @@
-package com.pechen.result_documents.year_sum;
+package com.pechen.resultdocuments.yearsum;
 
 /**
  * Created by pechen on 06.02.2018.

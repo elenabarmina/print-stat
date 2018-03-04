@@ -1,7 +1,8 @@
-package com.pechen.result_documents.year_sum;
+package com.pechen.resultdocuments.yearsum;
 
-import com.pechen.raw_documents.YearSumRawDocument;
-import com.pechen.result_documents.IStatisticDocument;
+import com.pechen.UserException;
+import com.pechen.rawdocuments.YearSumRawDocument;
+import com.pechen.resultdocuments.IStatisticDocument;
 
 import java.io.*;
 
@@ -23,7 +24,7 @@ public class YearSumStatisticDocument implements IStatisticDocument {
         return resultFilePath;
     }
 
-    public boolean loadSourceFileData() {
+    public void loadSourceFileData() throws UserException {
         List<String> sourceFileLines = new ArrayList<>();
 
         try (BufferedReader br =
@@ -36,18 +37,14 @@ public class YearSumStatisticDocument implements IStatisticDocument {
                 }
             }
         }catch (IOException e){
-            System.out.println("The source file can not be read");
-            return false;
+            throw new UserException("Error: the source file can not be read");
         }
 
         this.rawDataDocument = new YearSumRawDocument(sourceFileLines, sourceFileLines.size());
-        return true;
     }
 
     @Override
-    public boolean prepareDataForSaving() {
-        if (rawDataDocument == null) return false;
-
+    public void prepareDataForSaving(){
         Map<String, Integer> tempSumByYear = new HashMap<>();
 
         for(String raw : rawDataDocument.getLines()) {
@@ -79,14 +76,12 @@ public class YearSumStatisticDocument implements IStatisticDocument {
 
             System.out.println(newItem.getYear() + " " + newItem.getAmountSum());
         }
-
-        return true;
     }
 
     @Override
-    public boolean saveResultDataToFile() {
-        if (!loadSourceFileData()) return false;
-        if (!prepareDataForSaving()) return false;
+    public void saveResultDataToFile() throws UserException{
+        loadSourceFileData();
+        prepareDataForSaving();
 
         resultFilePath = RESULT_FILE_PATH + "sum_year_statistic_" + new Date().getTime() + ".txt";
 
@@ -100,10 +95,7 @@ public class YearSumStatisticDocument implements IStatisticDocument {
                 bw.newLine();
             }
         } catch (IOException e){
-            System.out.println("Error occurred while saving the file");
-            return false;
+            throw new UserException("Error occurred while saving the file");
         }
-
-        return true;
     }
 }
